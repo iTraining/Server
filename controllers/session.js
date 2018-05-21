@@ -32,9 +32,8 @@ var createSession = function(req, res, next) {
             console.log('[session_key] ', data.session_key)
 
             // 创建用户，如果用户不在数据库中
-            if (!member.get(req, data.openid)) {
-                member.create(req, data.openid)
-            }
+            var mem_temp = member.get(req, data.openid)
+            member.create(req, data.openid)
 
             // 创建session存储到redis中
             req.session.regenerate(function (err) {
