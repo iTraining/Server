@@ -35,7 +35,7 @@ var createSession = function(req, res, next) {
             if (!member.get(req, data.openid)) {
                 member.create(req, data.openid)
             }
-            
+
             // 创建session存储到redis中
             req.session.regenerate(function (err) {
                 if (err) {
@@ -69,7 +69,7 @@ var createSession = function(req, res, next) {
             console.log('[Error] ', data)
             return res.status(401).json({
                 code: 401,
-                msg: '[Error] Wrong request formal or Bad code',
+                msg: '[Error] Bad code',
                 err: data
             })
         }
