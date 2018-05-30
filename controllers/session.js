@@ -2,16 +2,17 @@ var crypto = require('crypto')
 var request = require('request')
 var member = require('../model/member')
 
+
 // 创建Session，当第一次登陆或者重新登陆
 var createSession = function(req, res, next) {
     // 验证是否有请求code
+    console.log(req.query.code)
     if (req.query.code === undefined 
         || req.query.code === '') {
-        res.status(401).json({
+        return res.status(401).json({
             code: 401,
-            msg: '[error] Wrong query formal.'
+            msg: '[Error] Wrong query formal.'
         })
-        return
     }
     var code = req.query.code;
 
@@ -32,9 +33,7 @@ var createSession = function(req, res, next) {
             console.log('[session_key] ', data.session_key)
 
             // 创建用户，如果用户不在数据库中
-            if (!member.get(req, data.openid)) {
-                member.create(req, data.openid)
-            }
+            member.create(req, [data.openid])
 
             // 创建session存储到redis中
             req.session.regenerate(function (err) {
@@ -62,7 +61,7 @@ var createSession = function(req, res, next) {
                 code: 500,
                 msg: '[Error] Internal server error or timeout',
                 err: err
-        })
+            })
         }
         else {
             // 请求错误

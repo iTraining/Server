@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(stylus.middleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'dist')));
 
 // Mysql connection middleware
 var mysql = require('mysql'),
@@ -26,7 +25,8 @@ var mysql = require('mysql'),
       host: '127.0.0.1',
       user: 'root',
       password: 'password',
-      database: 'itraining'
+      database: 'itraining',
+      multipleStatements: true
     };
 app.use(myConnection(mysql, dbOptions, 'pool'));
 
@@ -57,18 +57,26 @@ app.use(expressSession({
 }));
 
 
+// 检查是否有sessionid
+app.use(function(req, res, next) {
+  console.log('get request')
+  if (req.path === '/session' || req.session.openid) {
+    next();
+  }
+  else return res.status(401).json({
+    code: 401,
+    msg: '[Error] You have not sign in'
+  })
+})
+
+
 // TODO: make route
 // controllers
-// var createSession = require('./controllers/createSession');
-// var createRestaurant = require('./controllers/createRestaurant');
-// var getRestaurant = require('./controllers/getRestaurant');
 var session = require('./controllers/session');
-
+var team = require('./controllers/team');
 // routers
-// router.post('/session', createSession);
-// router.get('/restaurant', getRestaurant);
-// router.post('/restaurant', createRestaurant);
 router.get('/session', session.create);
+router.post('/team', team.create);
 
 app.use(router);
 
