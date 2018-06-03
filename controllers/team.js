@@ -21,7 +21,7 @@ var createNewTeam = function (req, res, next) {
 var getTeams = function (req, res, next) {
     option = req.query.option
     
-    if (!(option === 'joined' || option === 'all' || option === 'created') {
+    if (!(option === 'joined' || option === 'all' || option === 'created')) {
         return res.status(401).json({
             code: 401,
             msg: '[Error] Wrong query format'
