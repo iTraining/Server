@@ -18,34 +18,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(stylus.middleware(path.join(__dirname, 'public')));
 
-// Mysql connection middleware
-var mysql = require('mysql'),
-    myConnection = require('express-myconnection'),
-    dbOptions = {
-      host: '127.0.0.1',
-      user: 'root',
-      password: 'password',
-      database: 'itraining',
-      multipleStatements: true
-    };
-app.use(myConnection(mysql, dbOptions, 'pool'));
-
-
 // Redis stores session
+var config = require('./config/config')
 var expressSession = require('express-session');  // 该中间件使得req有session属性
 var RedisStore = require('connect-redis')(expressSession);
-var redisConfig={
-    'cookie' : {
-       'maxAge' : 1800000  // 30 * 60 * 1000 ms = 30 mins
-    },
-    'sessionStore' : {
-        'host' : '127.0.0.1',
-        'port' : '6379',
-        'db' : 1,
-        'ttl' : 1800, // 60 * 30 sec = 30 mins
-        'logErrors' : true
-    }
-}
+var redisConfig=config.redisConfig
 app.use(expressSession({
     name : 'sid',
     secret : 'zhidan',
@@ -58,27 +35,12 @@ app.use(expressSession({
 
 
 // 检查是否有sessionid
-app.use(function(req, res, next) {
-  console.log('get request')
-  if (req.path === '/session' || req.session.openid) {
-    next();
-  }
-  else return res.status(401).json({
-    code: 401,
-    msg: '[Error] You have not sign in'
-  })
-})
+var auth = require('./controllers/auth')
+app.use(auth.checkSession)
 
-
-// TODO: make route
-// controllers
-var session = require('./controllers/session');
-var team = require('./controllers/team');
-// routers
-router.get('/session', session.create);
-router.post('/team', team.create);
-
-app.use(router);
+// 配置API路由
+var routes = require('./routes');
+app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
