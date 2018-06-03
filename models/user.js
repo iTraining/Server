@@ -2,7 +2,7 @@ var db = require('./db')
 
 var select_sql = 'SELECT * FROM member WHERE wx_id=?'
 var insert_sql = 'INSERT INTO member (wx_id) VALUES (?)'
-exports.User = {
+module.exports = {
     // 获取member从数据库
     get: (req, wx_id) => {
         // Get an user with openid(wxid) and make token in redis

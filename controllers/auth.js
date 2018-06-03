@@ -23,7 +23,7 @@ var createSession = function(req, res, next) {
         qs: {
           grant_type: 'authorization_code',
           appid: 'wxd3dae784d91bedf3',
-          secret: '4b9f4ecc789c1f2cfee1c5efeecf6872',
+          secret: '74f8a0b038820663efbca24da8242b9e',
           js_code: code
         },
         timeout: 1000 // ms

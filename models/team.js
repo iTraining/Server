@@ -10,7 +10,7 @@ var select_joined_sql = 'SELECT * FROM team WHERE join_info.wx_id = ? AND join_i
 
 var select_created_sql = 'SELECT * FROM team WHERE team.leader_id = ?'
 
-exports.Team = {
+module.exports = {
     // 创建新队伍
     create: function(name, bio, leader_id) {
         db.queryDb(insert_sql, [name, bio, leader_id, leader_id])
