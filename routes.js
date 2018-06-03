@@ -11,6 +11,6 @@ router.get('/session', authController.createSession)
 
 // 'team'
 router.post('/team', teamController.createNewTeam)
-router.get('/teams', teamController.getTeams)
+router.get('/team', teamController.getTeams)
 
 module.exports = router
