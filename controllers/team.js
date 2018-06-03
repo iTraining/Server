@@ -48,5 +48,5 @@ var getTeams = function (req, res, next) {
 
 module.exports={
     createNewTeam: createNewTeam,
-    getJoinedTeams: getTeams
+    getTeams: getTeams
 }
