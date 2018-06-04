@@ -58,8 +58,10 @@ var createSession = function(req, res, next) {
             User.create(data.openid).then(function(result){
                 console.log('New user record')
             }).catch(function(err) {
-                console.log('Duplicate error') 
-                console.log(err)
+                if (err) {
+                    console.log(err)
+                    console.log('Duplicate error') 
+                }
             })
 
             // 创建session存储到redis中
@@ -105,6 +107,7 @@ var createSession = function(req, res, next) {
 
 // 检查合法性
 var checkSession = function(req, res, next) {
+    return next()
     console.log('get request')
     if (req.path === '/session' || req.session.openid) {
       next();

@@ -1,7 +1,7 @@
 var Team = require('../models/team')
 // 创建新队伍
 var createNewTeam = function (req, res, next) {
-    Team.create(req.body.name, req.body.bio, req.session.openid)
+    Team.create(req.body.name, req.body.bio, 'req.session.openid')
     .then(function(result) {
         console.log(result)
         res.status(201).json({
