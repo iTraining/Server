@@ -9,8 +9,13 @@ var teamController = require('./controllers/team')
 // '/session'
 router.get('/session', authController.createSession)
 
-// 'team'
+// '/team'
 router.post('/team', teamController.createNewTeam)
 router.get('/team', teamController.getTeams)
+router.get('/team/invitation', teamController.getInvitationLink)
+router.get('/team/join', teamController.joinTeam)
+
+// '/schedule'
+
 
 module.exports = router

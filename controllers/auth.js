@@ -9,9 +9,9 @@ var createSession = function(req, res, next) {
     console.log(req.query.code)
     if (req.query.code === undefined 
         || req.query.code === '') {
-        return res.status(401).json({
-            code: 401,
-            msg: '[Error] Wrong query formal.'
+        return res.status(400).json({
+            errcode: 400,
+            errmsg: '[Error] Wrong query formal.'
         })
     }
     var code = req.query.code;
@@ -67,9 +67,9 @@ var createSession = function(req, res, next) {
             req.session.regenerate(function (err) {
                 if (err) {
                     return res.status(500).json({
-                        code: 500,
-                        msg: '[Error] Create session error',
-                        data: err
+                        errcode: 500,
+                        errmsg: '[Error] Create session error',
+                        errdata: err
                     })
                 }
                 req.session.openid = data.openid
@@ -86,18 +86,18 @@ var createSession = function(req, res, next) {
         else if (data === undefined) {
             console.log('[Error] ', data)
             return res.status(500).json({
-                code: 500,
-                msg: '[Error] Internal server error or timeout',
-                err: err
+                errcode: 500,
+                errmsg: '[Error] Internal server error or timeout',
+                errdata: err
             })
         }
         else {
             // 请求错误
             console.log('[Error] ', data)
-            return res.status(401).json({
-                code: 401,
-                msg: '[Error] Bad code',
-                err: data
+            return res.status(403).json({
+                errcode: 403,
+                errmsg: '[Error] Bad code',
+                errdata: data
             })
         }
     })
@@ -106,12 +106,14 @@ var createSession = function(req, res, next) {
 
 // 检查合法性
 var checkSession = function(req, res, next) {
+    // return next()
+    // console.log('get request')
     if (req.path === '/session' || req.session.openid) {
       next();
     }
-    else return res.status(401).json({
-      code: 401,
-      msg: '[Error] You have not sign in'
+    else return res.status(403).json({
+      errcode: 403,
+      errmsg: '[Error] You have not sign in'
     })
 }
 
