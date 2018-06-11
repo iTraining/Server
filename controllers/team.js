@@ -7,7 +7,7 @@ var createNewTeam = function (req, res, next) {
         res.status(201).json({
             code: 201,
             msg: '[Sucess] Create team sucessfully',
-            data: result
+            data: result[0]
         })
     }).catch(function(err) {
         console.log(err)

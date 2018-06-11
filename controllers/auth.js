@@ -106,8 +106,6 @@ var createSession = function(req, res, next) {
 
 // 检查合法性
 var checkSession = function(req, res, next) {
-    return next()
-    console.log('get request')
     if (req.path === '/session' || req.session.openid) {
       next();
     }

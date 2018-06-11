@@ -5,7 +5,7 @@ var insert_sql = 'INSERT INTO team (name, bio, leader_id) VALUES (?, ?, ?);'
 var insert_join_sql = 'INSERT INTO join_info (wx_id, team_id) VALUES (?, ?);'
 
 var select_all_sql = 'SELECT * FROM team'
-var select_joined_sql = 'SELECT * FROM team WHERE join_info.wx_id = ? AND join_info.id = team.leader_id'
+var select_joined_sql = 'SELECT * FROM team INNER JOIN join_info WHERE join_info.wx_id = ? AND join_info.wx_id = team.leader_id'
 var select_created_sql = 'SELECT * FROM team WHERE team.leader_id = ?'
 var select_one_sql = 'SELECT * FROM team WHERE team_id=?'
 
