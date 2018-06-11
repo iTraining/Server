@@ -16,5 +16,6 @@ module.exports = {
 			 'ttl' : 1800, // 60 * 30 sec = 30 mins
 			 'logErrors' : true
 		 }
-	}
+	},
+	invite_token_ttl: 1000*60*30  // 30 mins
 }

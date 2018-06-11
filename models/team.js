@@ -5,9 +5,11 @@ var insert_sql = 'INSERT INTO team (name, bio, leader_id) VALUES (?, ?, ?);'
 var insert_join_sql = 'INSERT INTO join_info (wx_id, team_id) VALUES (?, ?);'
 
 var select_all_sql = 'SELECT * FROM team'
-var select_joined_sql = 'SELECT * FROM team INNER JOIN join_info WHEREjoin_info.wx_id = ? AND join_info.wx_id = team.leader_id'
+var select_joined_sql = 'SELECT * FROM team INNER JOIN join_info WHERE join_info.wx_id = ? AND join_info.wx_id = team.leader_id'
 var select_created_sql = 'SELECT * FROM team WHERE team.leader_id = ?'
 var select_one_sql = 'SELECT * FROM team WHERE team_id=?'
+var select_token_sql = 'SELECT join_token FROM team WHERE team_id=?'
+var update_invite_token_sql = 'UPDATE team SET join_token=? WHERE team_id=?'
 
 module.exports = {
     // 创建新队伍
@@ -31,5 +33,18 @@ module.exports = {
         if (option === 'created') {
             return db.queryDb(select_created_sql, wx_id)
         }
+    },
+    get_token: function(team_id) {
+        return db.queryDb(select_token_sql, [team_id])
+    },
+    update_token: function(team_id) {
+        var token = Buffer(Date().toString).toString('base64')
+        return db.queryDb(update_invite_token_sql, [token, team_id])
+        .then(function(result) {
+            return token
+        })
+    },
+    create_join: function(wx_id, team_id) {
+        return db.queryDb(insert_join_sql, [wx_id, team_id])
     }
 }
