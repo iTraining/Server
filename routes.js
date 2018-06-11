@@ -18,4 +18,5 @@ router.get('/team/join', teamController.joinTeam)
 // '/schedule'
 
 
+
 module.exports = router
