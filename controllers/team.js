@@ -56,8 +56,9 @@ var getInvitationLink = function (req, res, next) {
             errmsg: '[Error] Wrong query format'
         })
     }
+    // 校验是否为队伍创建人
 
-    Team.get_token(req.query.team_id)
+    Team.get_token(req.query.team_id, req.session.openid)
     .then(function(result) {
         // 检查是否为空
         if (result[0] !== undefined) {
@@ -74,7 +75,7 @@ var getInvitationLink = function (req, res, next) {
             }
         }
         // 更新token
-        return Team.update_token(req.query.team_id)
+        return Team.update_token(req.query.team_id, req.session.openid)
         .then(function(new_token) {
             // 更新
             return res.status(200).json({
@@ -105,7 +106,6 @@ var joinTeam = function(req, res, next) {
             errmsg: '[Error] Wrong query format'
         })
     }
-    // 校验token
     Team.get_token(req.query.team_id)
     .then(function(result) {
         if (result[0] !== undefined && req.query.token === result[0]) { 
@@ -137,6 +137,7 @@ var joinTeam = function(req, res, next) {
         })
     })
 }
+
 
 
 module.exports={
