@@ -69,7 +69,7 @@ var getInvitationLink = function (req, res, next) {
                 return res.status(200).json({
                     code: 200,
                     msg: '[Success] Get link successfully',
-                    data: 'https://itraining.zhanzy.xyz/team/join?token='+result[0]+
+                    data: 'https://itraining.zhanzy.xyz/api/v1/team/join?token='+result[0]+
                     '&team_id='+req.query.team_id.toString()
                 })
             }
@@ -82,7 +82,7 @@ var getInvitationLink = function (req, res, next) {
 	    	return res.status(200).json({
         	    code: 200,
                     msg: '[Success] Get link successfully',
-                    data: 'https://itraining.zhanzy.xyz/team/join?token='+new_token+
+                    data: 'https://itraining.zhanzy.xyz/api/v1/team/join?token='+new_token+
                     '&team_id='+req.query.team_id.toString()
                 })
 	    }
