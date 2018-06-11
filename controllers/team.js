@@ -61,10 +61,10 @@ var getInvitationLink = function (req, res, next) {
     Team.get_token(req.query.team_id, req.session.openid)
     .then(function(result) {
         // 检查是否为空
-        if (result[0] !== undefined) {
+        if (result[0].join_token) {
             // 检查旧的是否过期
             var date = new Date()
-            var token_date = new Date(Buffer(result[0], 'base64').toString())
+            var token_date = new Date(Buffer(result[0].join_token, 'base64').toString())
             if ((date - token_date) < config.invite_token_ttl) {
                 return res.status(200).json({
                     code: 200,
@@ -78,12 +78,18 @@ var getInvitationLink = function (req, res, next) {
         return Team.update_token(req.query.team_id, req.session.openid)
         .then(function(new_token) {
             // 更新
-            return res.status(200).json({
-                code: 200,
-                msg: '[Success] Get link successfully',
-                data: 'https://itraining.zhanzy.xyz/team/join?token='+new_token+
-                '&team_id='+req.query.team_id.toString()
-            })
+            if (new_token) {
+	    	return res.status(200).json({
+        	    code: 200,
+                    msg: '[Success] Get link successfully',
+                    data: 'https://itraining.zhanzy.xyz/team/join?token='+new_token+
+                    '&team_id='+req.query.team_id.toString()
+                })
+	    }
+	    return res.status(403).json({
+		errcode: 403,
+		errmsg: '[Error] Wrong leader_id'
+	    })
         })
     })
     .catch(function(err) {

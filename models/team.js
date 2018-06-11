@@ -38,11 +38,12 @@ module.exports = {
         return db.queryDb(select_token_sql, [team_id, leader_id])
     },
     update_token: function(team_id, leader_id) {
-        var token = Buffer(Date().toString).toString('base64')
+	console.log('token='+token)
         return db.queryDb(update_invite_token_sql, [token, team_id, leader_id])
         .then(function(result) {
-            console.log(result)
-            return token
+            if (result.affectedRows)
+		return token
+	     return undefined
         })
     },
     create_join: function(wx_id, team_id) {
