@@ -24,7 +24,7 @@ var getTeams = function (req, res, next) {
     
     if (!(option === 'joined' || option === 'all' || option === 'created')) {
         return res.status(400).json({
-            errcode: 400,
+            code: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
@@ -40,7 +40,7 @@ var getTeams = function (req, res, next) {
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            errcode: 500,
+            code: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
@@ -50,9 +50,9 @@ var getTeams = function (req, res, next) {
 // 获取邀请链接
 var getInvitationLink = function (req, res, next) { 
     // 校验
-    if (req.query.team_id == undefined || req.query.team_id == '') {
+    if (!req.query.team_id) {
         return res.status(400).json({
-            errcode: 400,
+            code: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
@@ -79,23 +79,23 @@ var getInvitationLink = function (req, res, next) {
         .then(function(new_token) {
             // 更新
             if (new_token) {
-	    	return res.status(200).json({
-        	    code: 200,
+                return res.status(200).json({
+                    code: 200,
                     msg: '[Success] Get link successfully',
                     data: 'https://itraining.zhanzy.xyz/api/v1/team/join?token='+new_token+
                     '&team_id='+req.query.team_id.toString()
                 })
-	    }
-	    return res.status(403).json({
-		errcode: 403,
-		errmsg: '[Error] Wrong leader_id'
-	    })
+            }
+            return res.status(403).json({
+                code: 403,
+                errmsg: '[Error] Wrong leader_id'
+            })
         })
     })
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            errcode: 500,
+            code: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
@@ -105,10 +105,9 @@ var getInvitationLink = function (req, res, next) {
 
 var joinTeam = function(req, res, next) {
     // 校验token team_id存在性
-    if (req.query.token === '' || req.query.token === undefined
-        || req.query.team_id === '' || req.query.team_id === undefined) {
+    if (!req.query.token || !req.query.team_id) {
         return res.status(400).json({
-            errcode: 400,
+            code: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
@@ -130,14 +129,14 @@ var joinTeam = function(req, res, next) {
             }
         }
         return req.status(403).json({
-            errcode: 403,
+            code: 403,
             errmsg: '[Error] Token is no exist or is out of date.'
         })
     })
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            errcode: 500,
+            code: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
