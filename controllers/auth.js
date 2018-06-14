@@ -7,10 +7,9 @@ var User = require('../models/user')
 var createSession = function(req, res, next) {
     // 验证是否有请求code
     console.log(req.query.code)
-    if (req.query.code === undefined 
-        || req.query.code === '') {
+    if (!req.query.code) {
         return res.status(400).json({
-            errcode: 400,
+            code: 400,
             errmsg: '[Error] Wrong query formal.'
         })
     }
@@ -67,7 +66,7 @@ var createSession = function(req, res, next) {
             req.session.regenerate(function (err) {
                 if (err) {
                     return res.status(500).json({
-                        errcode: 500,
+                        code: 500,
                         errmsg: '[Error] Create session error',
                         errdata: err
                     })
@@ -86,7 +85,7 @@ var createSession = function(req, res, next) {
         else if (data === undefined) {
             console.log('[Error] ', data)
             return res.status(500).json({
-                errcode: 500,
+                code: 500,
                 errmsg: '[Error] Internal server error or timeout',
                 errdata: err
             })
@@ -95,7 +94,7 @@ var createSession = function(req, res, next) {
             // 请求错误
             console.log('[Error] ', data)
             return res.status(403).json({
-                errcode: 403,
+                code: 403,
                 errmsg: '[Error] Bad code',
                 errdata: data
             })
@@ -112,7 +111,7 @@ var checkSession = function(req, res, next) {
       next();
     }
     else return res.status(403).json({
-      errcode: 403,
+      code: 403,
       errmsg: '[Error] You have not sign in'
     })
 }

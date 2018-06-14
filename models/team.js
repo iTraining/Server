@@ -23,6 +23,9 @@ module.exports = {
             return db.queryDb(select_one_sql, team_id)
         })
     },
+    get_one: function(team_id) {
+        return db.queryDb(select_one_sql, [team_id])
+    },
     get: function(wx_id, option='joined') {
         if (option === 'joined') {
             return db.queryDb(select_joined_sql, wx_id)
@@ -42,8 +45,8 @@ module.exports = {
         return db.queryDb(update_invite_token_sql, [token, team_id, leader_id])
         .then(function(result) {
             if (result.affectedRows)
-		return token
-	     return undefined
+		        return token
+	        return undefined
         })
     },
     create_join: function(wx_id, team_id) {
