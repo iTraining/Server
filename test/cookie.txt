@@ -1,9 +1,0 @@
-HTTP/1.1 200 OK
-X-Powered-By: Express
-Content-Type: application/json; charset=utf-8
-Content-Length: 109
-ETag: W/"6d-+bBMsjLWEpjjSSzmGRni3FFuCyM"
-set-cookie: sid=s%3AGJjVIE3W8ElYGIkix1dpZOXCmxRkhCJg.qqSTy8FGcK0aP0QEPGCEqEBxZbKguhcDlyjGYuI31sc; Path=/; Expires=Fri, 15 Jun 2018 12:20:27 GMT; HttpOnly
-Date: Fri, 15 Jun 2018 11:50:27 GMT
-Connection: keep-alive
-
