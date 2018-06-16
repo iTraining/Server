@@ -14,11 +14,10 @@ var storage = multer.diskStorage({
             file.originalname = file.originalname.replace(' ', '-')
             var names = file.originalname.split('.')
             
-            var openid = req.session.openid.toString()
             var date = Date.now()
             var type = names.pop()
             var file_name = names.join('.')
-            name = file_name + '_' + openid + '_' + date
+            name = file_name + '_' + date
             
             name = md5.update(name).digest('hex')
 
@@ -37,7 +36,7 @@ var metaController = require('./controllers/schedule')
 // API
 
 // '/session'
-router.get('/session', authController.createSession)
+router.route('/session').get(upload.single('avatar'), authController.createSession)
 
 // '/team'
 router.route('/team').post(upload.single('avatar'), teamController.createNewTeam)
