@@ -1,7 +1,13 @@
 var Team = require('../models/team')
 var config = require('../config/config')
 // 创建新队伍
-var createNewTeam = function (req, res, next) {
+var createNewTeam = function (req, res, next) { // 校验
+    if (!req.body.name || !req.body.bio) {
+        return res.status(400).json({
+            errcode: 400,
+            errmsg: '[Error] Wrong post format'
+        })
+    }
     Team.create(req.body.name, req.body.bio, req.session.openid)
     .then(function(result) {
         console.log(result)
@@ -13,8 +19,9 @@ var createNewTeam = function (req, res, next) {
     }).catch(function(err) {
         console.log(err)
         return res.status(401).json({
-            code: 401,
-            msg: '[Error] Insert data must be wrong.'
+            errcode: 401,
+            errmsg: '[Error] The team name has been exist.',
+            errdata: err
         })
     })
 }
@@ -24,7 +31,7 @@ var getTeams = function (req, res, next) {
     
     if (!(option === 'joined' || option === 'all' || option === 'created')) {
         return res.status(400).json({
-            code: 400,
+            errcode: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
@@ -40,7 +47,7 @@ var getTeams = function (req, res, next) {
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            code: 500,
+            errcode: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
@@ -52,7 +59,7 @@ var getInvitationLink = function (req, res, next) {
     // 校验
     if (!req.query.team_id) {
         return res.status(400).json({
-            code: 400,
+            errcode: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
@@ -60,6 +67,7 @@ var getInvitationLink = function (req, res, next) {
 
     Team.get_token(req.query.team_id, req.session.openid)
     .then(function(result) {
+        console.log("result", result)
         // 检查是否为空
         if (result[0].join_token) {
             // 检查旧的是否过期
@@ -77,6 +85,7 @@ var getInvitationLink = function (req, res, next) {
         // 更新token
         return Team.update_token(req.query.team_id, req.session.openid)
         .then(function(new_token) {
+            console.log("new_token", new_token)
             // 更新
             if (new_token) {
 		return res.status(200).json({
@@ -95,7 +104,7 @@ var getInvitationLink = function (req, res, next) {
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            code: 500,
+            errcode: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
@@ -107,15 +116,16 @@ var joinTeam = function(req, res, next) {
     // 校验token team_id存在性
     if (!req.query.token || !req.query.team_id) {
         return res.status(400).json({
-            code: 400,
+            errcode: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
-    Team.get_token(req.query.team_id)
+    Team.get_token(req.query.team_id, req.session.openid)
     .then(function(result) {
-        if (result[0] !== undefined && req.query.token === result[0]) { 
+        console.log(result)
+        if (result[0] && req.query.token === result[0].join_token) { 
             // 校验日期是否合法
-            var token_date = new Date(Buffer(result[0], 'base64').toString())
+            var token_date = new Date(Buffer(result[0].join_token, 'base64').toString())
             var date = new Date()
             if ((date - token_date) < config.invite_token_ttl) {
                 // 成功校验，添加成员
@@ -128,15 +138,15 @@ var joinTeam = function(req, res, next) {
                 })
             }
         }
-        return req.status(403).json({
-            code: 403,
+        return res.status(403).json({
+            errcode: 403,
             errmsg: '[Error] Token is no exist or is out of date.'
         })
     })
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            code: 500,
+            errcode: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
