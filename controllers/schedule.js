@@ -8,7 +8,7 @@ var createMeta = function(req, res, next) {
         || !req.body.index1 || !req.body.index2
         || !req.body.index3 || !req.body.index4) {
         return res.status(400).json({
-            code: 400,
+            errcode: 400,
             errmsg: '[Error] Wrong query format'
         })
     }
@@ -31,7 +31,7 @@ var createMeta = function(req, res, next) {
         }
         else {
             return res.status(403).json({
-                code: 403,
+                errcode: 403,
                 errmsg: '[Error] You are no leader of team'
             })
         }
@@ -39,7 +39,7 @@ var createMeta = function(req, res, next) {
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
-            code: 500,
+            errcode: 500,
             errmsg: '[Error] Internal error.',
             errdata: err
         })
@@ -47,6 +47,55 @@ var createMeta = function(req, res, next) {
 
 }
 
+// 获取训练头信息
+var getMeta = function(req, res, next) {
+     // 校验post format
+     if (!req.query.team_id) {
+        return res.status(400).json({
+            errcode: 400,
+            errmsg: '[Error] Wrong query format'
+        })
+    }
+     // 校验身份，查看是否是leader
+     Team.get_one(req.query.team_id)
+     .then(function(result) {
+         if (result[0].leader_id == req.session.openid) {
+             // 已确认身份, 获取meta
+             return Meta.get(req.query.team_id)
+             .then(function(result) {
+                 return res.status(200).json({
+                     code: 200,
+                     msg: '[Success] Get training meta data successfully',
+                     data: result
+                 })
+             })
+         }
+         else {
+             return res.status(403).json({
+                 errcode: 403,
+                 errmsg: '[Error] You are no leader of team'
+             })
+         }
+     })
+    .catch(function(err) {
+        console.log(err)
+        return res.status(500).json({
+            errcode: 500,
+            errmsg: '[Error] Internal error.',
+            errdata: err
+        })
+    })
+}
+
+// TODO
+// 创建训练计划
+var createSchedule = function(req, res, next) {
+    // 校验表单
+    
+}
+
+
 module.exports = {
-    createMeta: createMeta
+    createMeta: createMeta,
+    getMeta: getMeta
 }

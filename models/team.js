@@ -41,7 +41,7 @@ module.exports = {
         return db.queryDb(select_token_sql, [team_id, leader_id])
     },
     update_token: function(team_id, leader_id) {
-	console.log('token='+token)
+        var token = Buffer(new Date().toString()).toString('base64')
         return db.queryDb(update_invite_token_sql, [token, team_id, leader_id])
         .then(function(result) {
             if (result.affectedRows)

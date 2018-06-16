@@ -3,6 +3,7 @@ var router = express.Router()
 
 var authController = require('./controllers/auth')
 var teamController = require('./controllers/team')
+var metaController = require('./controllers/schedule')
 
 // API
 
@@ -16,5 +17,8 @@ router.get('/team/invitation', teamController.getInvitationLink)
 router.get('/team/join', teamController.joinTeam)
 
 // '/schedule'
+router.post('/schedule/meta', metaController.createMeta)
+router.get('/schedule/meta', metaController.getMeta)
+
 
 module.exports = router
