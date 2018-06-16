@@ -1,8 +1,8 @@
 // Create new team (?, ?, ?) => (team.name, team.bio, wx_id)
 var db = require('./db')
 
-var insert_sql = 'INSERT INTO team (name, bio, leader_id) VALUES (?, ?, ?);'
-var insert_join_sql = 'INSERT INTO join_info (wx_id, team_id, image_url) VALUES (?, ?, ?);'
+var insert_sql = 'INSERT INTO team (name, bio, leader_id, image_url) VALUES (?, ?, ?, ?);'
+var insert_join_sql = 'INSERT INTO join_info (wx_id, team_id) VALUES (?, ?);'
 
 var select_all_sql = 'SELECT * FROM team'
 var select_joined_sql = 'SELECT * FROM team INNER JOIN join_info WHERE join_info.wx_id = ? AND join_info.team_id = team.team_id'
