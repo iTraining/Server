@@ -40,7 +40,7 @@ var metaController = require('./controllers/schedule')
 router.get('/session', authController.createSession)
 
 // '/team'
-router.route('/team').post(upload('avatar'), teamController.createNewTeam)
+router.route('/team').post(upload.single('avatar'), teamController.createNewTeam)
 router.get('/team', teamController.getTeams)
 router.get('/team/invitation', teamController.getInvitationLink)
 router.get('/team/join', teamController.joinTeam)
