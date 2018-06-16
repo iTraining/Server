@@ -2,7 +2,7 @@
 var db = require('./db')
 
 var insert_sql = 'INSERT INTO team (name, bio, leader_id) VALUES (?, ?, ?);'
-var insert_join_sql = 'INSERT INTO join_info (wx_id, team_id) VALUES (?, ?);'
+var insert_join_sql = 'INSERT INTO join_info (wx_id, team_id, image_url) VALUES (?, ?, ?);'
 
 var select_all_sql = 'SELECT * FROM team'
 var select_joined_sql = 'SELECT * FROM team INNER JOIN join_info WHERE join_info.wx_id = ? AND join_info.team_id = team.team_id'
@@ -13,9 +13,9 @@ var update_invite_token_sql = 'UPDATE team SET join_token=? WHERE team_id=? AND 
 
 module.exports = {
     // 创建新队伍
-    create: function(name, bio, leader_id) {
+    create: function(name, bio, leader_id, image_url) {
         var team_id;
-        return db.queryDb(insert_sql, [name, bio, leader_id])
+        return db.queryDb(insert_sql, [name, bio, leader_id, image_url])
         .then(function (result) {
             team_id = result.insertId
             return db.queryDb(insert_join_sql, [leader_id, team_id])

@@ -8,7 +8,11 @@ var createNewTeam = function (req, res, next) { // 校验
             errmsg: '[Error] Wrong post format'
         })
     }
-    Team.create(req.body.name, req.body.bio, req.session.openid)
+    var image_url = ''
+    if (req.file) {
+        image_url = 'img/'+req.file.filename
+    }
+    Team.create(req.body.name, req.body.bio, req.session.openid, image_url)
     .then(function(result) {
         console.log(result)
         res.status(201).json({
@@ -35,6 +39,7 @@ var getTeams = function (req, res, next) {
             errmsg: '[Error] Wrong query format'
         })
     }
+
 
     Team.get(req.session.openid, option)
     .then(function(result) {
