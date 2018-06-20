@@ -7,8 +7,7 @@ var User = require('../models/user')
 var createSession = function(req, res, next) {
     // 验证是否有请求code
     console.log(req.query.code)
-    if (!req.query.code
-        || !req.query.nickname ) {
+    if (!req.query.code) {
         console.log(req.file)
         if (req.file) fs.unlinkSync('../'+req.file.path)
         return res.status(400).json({
@@ -87,6 +86,7 @@ var createSession = function(req, res, next) {
                 // 创建session存储到redis中
                 req.session.regenerate(function (err) {
                     if (err) {
+			console.log(err)
                         if (image_url) fs.unlinkSync('../uploads/'+image_url)
                         return res.status(500).json({
                             errcode: 500,
@@ -107,6 +107,7 @@ var createSession = function(req, res, next) {
             })
             .catch(function(err) {
                 if (image_url) fs.unlinkSync('../uploads/'+image_url)
+		console.log(err)
                 return res.status(500).json({
                     code: 500,
                     errmsg: '[Error] Internal err',
