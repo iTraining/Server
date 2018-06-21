@@ -5,10 +5,10 @@ var multer  = require('multer')
 var crypto = require('crypto')
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/img')
+	cb(null, 'uploads/img')
     },
     filename: function (req, file, cb) {
-        if (req.session.openid) {
+	if (req.session.openid) {
             var md5 = crypto.createHash('md5')
 
             file.originalname = file.originalname.replace(' ', '-')
