@@ -92,7 +92,7 @@ var createSession = function(req, res, next) {
                         code: 200,
                         msg: '[Success] Create session success',
                         data: {
-                            sessionid: req.session.id
+                            wx_id: data.openid
                         }
                     })
                 })

@@ -161,7 +161,7 @@ var getSchedulesBrief = function(req, res, next) {
 }
 
 // 获取训练计划中间件
-var getSchedules = function(req, res, next) {
+var getScheduleList = function(req, res, next) {
     // 校验表单
     if (req.query.option === 'created')
         getCreatedSchedulesBrief(req, res, next)
@@ -226,8 +226,13 @@ var getScheduleDetail = function(req, res, next) {
     })
 }
 
+// 训练打卡
+var checkinSchedule = function(req, res, next) {
+    
+}
+
 module.exports = {
     createTeamSchedule: createTeamSchedule,
-    getSchedules: getSchedules,
+    getScheduleList: getScheduleList,
     getScheduleDetail: getScheduleDetail
 }

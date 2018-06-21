@@ -53,8 +53,8 @@ router.delete('/team/member', teamController.removeMember);
 router.post('/schedule/meta', metaController.createMeta)
 router.get('/schedule/meta', metaController.getMeta)
 router.post('/schedule', scheduleController.createTeamSchedule)
-router.get('/schedule', scheduleController.getSchedules)
-router.get('/schedule/information', scheduleController.getScheduleDetail)
+router.get('/schedule', scheduleController.getScheduleDetail)
+router.get('/schedule/collection', scheduleController.getScheduleList)
 
 
 module.exports = router
