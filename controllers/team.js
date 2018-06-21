@@ -74,7 +74,7 @@ var getInvitationLink = function (req, res, next) {
     .then(function(result) {
         console.log("result", result)
         // 检查是否为空
-        if (result[0].join_token) {
+        if (result[0] && result[0].join_token) {
             // 检查旧的是否过期
             var date = new Date()
             var token_date = new Date(Buffer(result[0].join_token, 'base64').toString())

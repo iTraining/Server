@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 
-var multer  = require('koa-multer')
+var multer  = require('multer')
 var crypto = require('crypto')
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
