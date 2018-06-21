@@ -26,9 +26,10 @@ var createSession = function(req, res, next) {
     if (code === 'TEST_CODE') {
         var openid = 'oEvgD5p2WFnAXlrqrxd4GDlOgdx4'  
         // 创建用户，如果用户不在数据库中
-        User.create(openid).then(function(result){
+        User.create(openid, req.query.nickname, '').then(function(result){
             console.log('New user record')
         }).catch(function(err) {
+            console.log(err)
             if (err) {
                 console.log('Duplicate error') 
             }
