@@ -7,24 +7,18 @@ var User = require('../models/user')
 var createSession = function(req, res, next) {
     // 验证是否有请求code
     console.log(req.body.code)
-    if (!req.body.code) {
-        if (req.file) fs.unlinkSync('../'+req.body.path)
+    if (!req.body.code || !req.body.nickname || req.body.image_url) {
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong query formal.'
         })
     }
-    var image_url = ''
-    if (req.file) {
-        image_url = 'img/'+req.file.filename
-    }
-    var code = req.body.code;
-
+    var code = req.body.code
     // 测试用： 后门
     if (code === 'TEST_CODE') {
         var openid = 'oEvgD5p2WFnAXlrqrxd4GDlOgdx4'  
         // 创建用户，如果用户不在数据库中
-        User.create(openid, req.body.nickname, image_url).then(function(result){
+        User.create(openid, req.body.nickname, req.body.image_url).then(function(result){
             console.log('New user record')
         }).catch(function(err) {
             console.log(err)
@@ -75,13 +69,11 @@ var createSession = function(req, res, next) {
             User.get(data.openid).then(function(result){
                 if (result[0]) {
                     // 存在用户，删除旧头像，更新   
-                    console.log(result[0].image_url)
-                    if (result[0].image_url) fs.unlinkSync('../uploads/'+result[0].image_url)
-                    return User.update(data.openid, req.query.nickname, image_url)
+                    return User.update(data.openid, req.body.nickname, req.body.image_url)
                 }
                 else {
                     // 不存在用户， 创建
-                    return User.create(data.openid, req.query.nickname, image_url)
+                    return User.create(data.openid, req.body.nickname, req.body.image_url)
                 }
             }).then(function(result) {
                 // 创建session存储到redis中
@@ -106,7 +98,6 @@ var createSession = function(req, res, next) {
                 })
             })
             .catch(function(err) {
-                if (image_url) fs.unlinkSync('../uploads/'+image_url)
 		        console.log(err)
                 return res.status(500).json({
                     code: 500,
@@ -118,7 +109,6 @@ var createSession = function(req, res, next) {
             
         }
         else if (data === undefined) {
-            if (image_url) fs.unlinkSync('../uploads/'+image_url)
             console.log('[Error] ', data)
             return res.status(500).json({
                 code: 500,
@@ -128,7 +118,6 @@ var createSession = function(req, res, next) {
         }
         else {
             // 请求错误
-            if (image_url) fs.unlinkSync('../uploads/'+image_url)
             console.log('[Error] ', data)
             return res.status(403).json({
                 code: 403,

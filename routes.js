@@ -37,7 +37,7 @@ var scheduleController = require('./controllers/schedule')
 // API
 
 // '/session'
-router.route('/session').post(upload.single('avatar'), authController.createSession)
+router.post('/session', authController.createSession)
 
 // '/team'
 router.route('/team').post(upload.single('avatar'), teamController.createNewTeam)
