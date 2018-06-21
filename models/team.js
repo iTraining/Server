@@ -54,7 +54,7 @@ module.exports = {
         return db.queryDb(select_token_leader_sql, [team_id, leader_id])
     },
     get_token: function(team_id) {
-        return db.queryDb(select_joined_sql, [team_id])
+        return db.queryDb(select_token_sql, [team_id])
     },
     update_token: function(team_id, leader_id) {
         var token = Buffer(new Date().toString()).toString('base64')

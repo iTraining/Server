@@ -7,7 +7,7 @@ var User = require('../models/user')
 var createSession = function(req, res, next) {
     // 验证是否有请求code
     console.log(req.body.code)
-    if (!req.body.code || !req.body.nickname || req.body.image_url) {
+    if (!req.body.code || !req.body.nickname || !req.body.image_url) {
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong query formal.'
