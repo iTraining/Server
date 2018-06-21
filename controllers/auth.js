@@ -6,10 +6,9 @@ var User = require('../models/user')
 // 创建Session，当第一次登陆或者重新登陆
 var createSession = function(req, res, next) {
     // 验证是否有请求code
-    console.log(req.query.code)
-    if (!req.query.code) {
-        console.log(req.file)
-        if (req.file) fs.unlinkSync('../'+req.file.path)
+    console.log(req.body.code)
+    if (!req.body.code) {
+        if (req.file) fs.unlinkSync('../'+req.body.path)
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong query formal.'
@@ -19,13 +18,13 @@ var createSession = function(req, res, next) {
     if (req.file) {
         image_url = 'img/'+req.file.filename
     }
-    var code = req.query.code;
+    var code = req.body.code;
 
     // 测试用： 后门
     if (code === 'TEST_CODE') {
         var openid = 'oEvgD5p2WFnAXlrqrxd4GDlOgdx4'  
         // 创建用户，如果用户不在数据库中
-        User.create(openid, req.query.nickname, '').then(function(result){
+        User.create(openid, req.body.nickname, image_url).then(function(result){
             console.log('New user record')
         }).catch(function(err) {
             console.log(err)
@@ -45,8 +44,8 @@ var createSession = function(req, res, next) {
             }
             req.session.openid = openid
             req.session.session_key = 'session_key'
-            return res.status(200).json({
-                code: 200,
+            return res.status(201).json({
+                code: 201,
                 msg: '[Success] Create session success',
                 data: {
                     sessionid: req.session.id
@@ -76,7 +75,8 @@ var createSession = function(req, res, next) {
             User.get(data.openid).then(function(result){
                 if (result[0]) {
                     // 存在用户，删除旧头像，更新   
-                    if (image_url) fs.unlinkSync('../uploads/'+image_url)
+                    console.log(result[0].image_url)
+                    if (result[0].image_url) fs.unlinkSync('../uploads/'+result[0].image_url)
                     return User.update(data.openid, req.query.nickname, image_url)
                 }
                 else {
@@ -87,8 +87,7 @@ var createSession = function(req, res, next) {
                 // 创建session存储到redis中
                 req.session.regenerate(function (err) {
                     if (err) {
-			console.log(err)
-                        if (image_url) fs.unlinkSync('../uploads/'+image_url)
+			            console.log(err)
                         return res.status(500).json({
                             errcode: 500,
                             errmsg: '[Error] Create session error',
@@ -108,7 +107,7 @@ var createSession = function(req, res, next) {
             })
             .catch(function(err) {
                 if (image_url) fs.unlinkSync('../uploads/'+image_url)
-		console.log(err)
+		        console.log(err)
                 return res.status(500).json({
                     code: 500,
                     errmsg: '[Error] Internal err',

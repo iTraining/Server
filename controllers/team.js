@@ -4,6 +4,7 @@ var config = require('../config/config')
 // 创建新队伍
 var createNewTeam = function (req, res, next) { // 校验
     if (!req.body.name || !req.body.bio) {
+        if (req.file) fs.unlinkSync('../'+req.file.path)
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong post format'
@@ -21,6 +22,7 @@ var createNewTeam = function (req, res, next) { // 校验
             data: result[0]
         })
     }).catch(function(err) {
+        if (req.file) fs.unlinkSync('../'+req.file.path)
         // console.log(err)
         return res.status(401).json({
             errcode: 401,
@@ -63,13 +65,16 @@ var getTeams = function (req, res, next) {
 var updateTeam = function(req, res, next) {
     // 校验
     if (!req.body.name || !req.body.bio || !req.body.team_id) {
+        if (req.file) fs.unlinkSync('../'+req.file.path)
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong post format'
         })
     }
     var image_url = ''
-    // TODO: update image
+    if (req.file) {
+        image_url = 'img/'+req.file.filename
+    }
 
     // 更新对应队长的队伍
     Team.update_team(req.body.team_id, req.session.openid, req.body.name, req.body.bio, image_url)
@@ -82,6 +87,7 @@ var updateTeam = function(req, res, next) {
     })
     .catch(function(err) {
         console.log(err)
+        if (req.file) fs.unlinkSync('../'+req.file.path)
         return res.status(500).json({
             errcode: 500,
             errmsg: '[Error] Internal error.',

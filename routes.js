@@ -5,7 +5,7 @@ var multer  = require('multer')
 var crypto = require('crypto')
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-	cb(null, 'uploads/img')
+	    cb(null, 'uploads/img')
     },
     filename: function (req, file, cb) {
 	if (req.session.openid) {
@@ -37,12 +37,12 @@ var scheduleController = require('./controllers/schedule')
 // API
 
 // '/session'
-router.route('/session').get(upload.single('avatar'), authController.createSession)
+router.route('/session').post(upload.single('avatar'), authController.createSession)
 
 // '/team'
 router.route('/team').post(upload.single('avatar'), teamController.createNewTeam)
 router.get('/team', teamController.getTeams)
-router.put('/team', teamController.updateTeam)
+router.route('/team').put(upload.single('avatar'), teamController.updateTeam)
 router.delete('/team', teamController.removeTeam)
 router.get('/team/invitation', teamController.getInvitationLink)
 router.get('/team/join', teamController.joinTeam)
