@@ -63,35 +63,14 @@ var getMeta = function(req, res, next) {
             errmsg: '[Error] Wrong query format'
         })
     }
-     // 校验身份，查看是否是leader
-     Team.get_one(req.query.team_id)
-     .then(function(result) {
-        // 不存在队伍
-        if (!result[0]) {
-            return res.status(403).json({
-                errcode: 403,
-                errmsg: '[Error] The team is not exist'
-            })
-        }
-        // 存在队伍
-        if (result[0].leader_id == req.session.openid) {
-            // 已确认身份, 获取meta
-            return Meta.get(req.query.team_id)
-            .then(function(result) {
-                return res.status(200).json({
-                    code: 200,
-                    msg: '[Success] Get training meta data successfully',
-                    data: result
-                })
-            })
-         }
-         else {
-            return res.status(403).json({
-                errcode: 403,
-                errmsg: '[Error] You are no leader of team'
-            })
-         }
-     })
+    Meta.get(req.query.team_id)
+    .then(function(result) {
+        return res.status(200).json({
+            code: 200,
+            msg: '[Success] Get training meta data successfully',
+            data: result
+        })
+    })
     .catch(function(err) {
         console.log(err)
         return res.status(500).json({
