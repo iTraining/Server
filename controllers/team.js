@@ -1,6 +1,7 @@
 var Team = require('../models/team')
 var User = require('../models/user')
 var config = require('../config/config')
+var fs = require("fs")
 // 创建新队伍
 var createNewTeam = function (req, res, next) { // 校验
     if (!req.body.name || !req.body.bio) {
