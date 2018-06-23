@@ -42,8 +42,8 @@ router.post('/session', authController.createSession)
 // '/team'
 router.route('/team').post(upload.single('avatar'), teamController.createNewTeam)
 router.get('/team', teamController.getTeams)
-router.route('/team').put(upload.single('avatar'), teamController.updateTeam)
 router.delete('/team', teamController.removeTeam)
+router.route('/team/detail').put(upload.single('avatar'), teamController.updateTeam)
 router.get('/team/invitation', teamController.getInvitationLink)
 router.get('/team/join', teamController.joinTeam)
 router.get('/team/member', teamController.getMember);

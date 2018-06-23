@@ -23,8 +23,8 @@ var createNewTeam = function (req, res, next) { // 校验
             data: result[0]
         })
     }).catch(function(err) {
+	console.log(err)
         if (req.file) fs.unlinkSync('../'+req.file.path)
-        // console.log(err)
         return res.status(401).json({
             errcode: 401,
             errmsg: '[Error] The team name has been exist.',
