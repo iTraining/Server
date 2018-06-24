@@ -58,7 +58,7 @@ router.post('/schedule', scheduleController.createTeamSchedule)
 router.get('/schedule', scheduleController.getSchedules)
 
 // '/punch'
-router.router('/punch').post(upload.single('avatar'), punchController.punchInSchedule)
+router.route('/punch').post(upload.single('avatar'), punchController.punchInSchedule)
 router.get('/punch', punchController.getPunchInformation)
 
 // '/record'
