@@ -1,7 +1,6 @@
 var Team = require('../models/team')
 var Schedule = require('../models/schedule')
-var Record = require('../models/training_record')
-var Check = require('../models/training_check')
+var Reference = require('../models/training_reference')
 var User = require('../models/user')
 
 // 创建队伍训练计划
@@ -13,7 +12,7 @@ var User = require('../models/user')
  * title
  * training_date: YY-MM-DD
  * state: 草稿|发布
- * indicators: [
+ * references: [
  *   {group_number, data1, data2, data3, data4, meta_id},
  *   {group_number, ....}
  * ]
@@ -24,9 +23,10 @@ var User = require('../models/user')
  * 
  */
 var createTeamSchedule = function(req, res, next) {
+    // No member list  !req.body.members
     // 校验表单
     if (!req.body.training_class || !req.body.team_id || !req.body.description || !req.body.title 
-        || !req.body.training_date || !req.body.indicators || !req.body.members || !req.body.state) {
+        || !req.body.training_date || !req.body.references || !req.body.state) {
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong query format'
@@ -47,24 +47,18 @@ var createTeamSchedule = function(req, res, next) {
         if (result[0].leader_id == req.session.openid) {
             // 校验成功，创建schedule
             return Schedule.create_for_team(req.body.title, req.body.description, req.body.training_date, req.body.training_class, req.body.state,
-            req.body.team_id, req.session.openid,)
+            req.body.team_id, req.session.openid)
             .then(function(result){
                 var schedule = result[0]
 
-                // 批量插入指标到record
-                return Record.create_indicators(req.body.indicators, schedule.schedule_id)
+                // 批量插入指标到Reference
+                return Reference.create_references(req.body.references, schedule.schedule_id)
                 .then(function(result){
-                    schedule.indicators = req.body.indicators
-
-                    // 批量插入对应队员的打卡名单
-                    return Check.create(req.body.members, schedule.schedule_id)
-                    .then(function(result) {
-                        schedule.members = req.body.members
-                        return res.status(201).json({
-                            code: 201,
-                            msg: '[Success] Create schedule successfully!',
-                            data: schedule
-                        })
+                    schedule.references = req.body.references   
+                    return res.status(201).json({
+                        code: 201,
+                        msg: '[Success] Create schedule successfully!',
+                        data: schedule
                     })
                 })
             })
@@ -92,8 +86,8 @@ var createTeamSchedule = function(req, res, next) {
  * POST:
  * description
  * title
- * indicators: [
- *   {group_number, data1, data2, data3, data4, record_class, meta_id},
+ * references: [
+ *   {group_number, data1, data2, data3, data4, Reference_class, meta_id},
  *   {group_number, ....}
  * ]
  * members: [
@@ -102,137 +96,76 @@ var createTeamSchedule = function(req, res, next) {
  * 
  * 
  */
-var createPrivateSchedule = function(req, res, next) {
-    // 个人训练计划默认 training_class为测试
+// var createPrivateSchedule = function(req, res, next) {
+//     // 个人训练计划默认 training_class为测试
+//     // 校验表单
+//     if (!req.body.description || !req.body.title || !req,body.training || !req.body.members) {
+//         return res.status(400).json({
+//             errcode: 400,
+//             errmsg: '[Error] Wrong query format'
+//         })
+//     }
+//     // TODO:
+// }
+
+// 获取训练计划
+var getSchedules = function(req, res, next) {
     // 校验表单
-    if (!req.body.description || !req.body.title || !req,body.training || !req.body.members) {
+    if (!(req.query.option === 'created' || req.query.option === 'private')
+        || !req.query.team_id || !req.query.b_date || !req.query.e_date) {
         return res.status(400).json({
-            errcode: 400,
+            errcode: 400, 
             errmsg: '[Error] Wrong query format'
         })
     }
-    // TODO:
-}
 
-// 获取创建的训练计划列表（简要信息，不包含训练项目等）
-var getCreatedSchedulesBrief = function(req, res, next) {
-    // 校验表单
-    if (!req.query.team_id) {
-        return res.status(400).json({
-            errcode: 400,
-            errmsg: '[Error] Wrong query format'
-        })
+    // 获取
+    var get_sch
+    if (req.query.option === 'created') {
+        // 获取已创建的计划
+        get_sch = Schedule.get_created
     }
-    Schedule.get_created(req.session.openid, req.query.team_id)
-    .then(function(result) {
-        return res.status(200).json({
-            code: 200,
-            msg: '[Success] Get created team schedule successfully',
-            data: result
-        })
-    })
-    .catch(function(err) {
-        res.status(500).json({
-            errcode: 500,
-            errmsg: '[Error] Internal err',
-            errdata: err
-        })
-    })
-}
-
-// 获取打卡计划列表（简要信息，不包含训练项目等）
-var getSchedulesBrief = function(req, res, next) {
-    Schedule.get_schedule(req.session.openid)
-    .then(function(result) {
-        res.status(200).json({
-            code: 200,
-            msg: '[Success] Get schedules successfully',
-            data: result
-        })
-    })
-    .catch(function(err) {
-        return res.status(500).json({
-            errcode: 500,
-            errmsg: '[Error] Internal err',
-            errdata: err
-        })
-    })
-
-}
-
-// 获取训练计划中间件
-var getScheduleList = function(req, res, next) {
-    // 校验表单
-    if (req.query.option === 'created')
-        getCreatedSchedulesBrief(req, res, next)
-    else if (req.query.option === 'me')
-        getSchedulesBrief(req, res, next)
     else {
-        return res.status(400).json({
-            errcode: 400,
-            errmsg: '[Error] Wrong query format'
-        })
+        // 获取自己队伍的计划
+        get_sch = Schedule.get_schedule
     }
-}
 
-// 获取详细训练计划项目
-var getScheduleDetail = function(req, res, next) {
-    // 校验表单
-    if (!req.query.schedule_id) {
-        return res.status(400).json({
-            errcode: 400,
-            errmsg: '[Error] Wrong query format'
-        })
-    }
-    Schedule.get_one(req.query.schedule_id)
+    get_sch(req.session.openid, req.query.team_id, req.query.b_date, req.query.e_date)
     .then(function(result) {
-        var schedule = result[0]
-        if (schedule) {
-            Record.get(req.query.schedule_id)
-            .then(function(result) {
-                schedule.indicators = result
-                
-                // 获取对队员id
-                return Check.get_wxid(req.query.schedule_id)
-                .then(function(result) {
-
-                    // 获取队员信息
-                    return User.get_list(result)
-                    .then(function(result) {
-                        schedule.members = result;
-                        return res.status(200).json({
-                            code: 200,
-                            msg: '[Success] Get schedule detail successfully',
-                            data, schedule
-                        })
-                    })
-                })
-            })
+        var schedule = result
+        var schedule_id_list = [] 
+        var id_map = {}
+        for (let index = 0; index < schedule.length; index++) {
+            schedule[index].references = []
+            schedule_id_list.push(schedule[index].schedule_id)
+            id_map[schedule_id] = index
         }
-        else {
-            return res.status(200).json({
+        // 获取相应的references
+        return Reference.get_by_schedule(schedule)
+        .then(function(result) {
+            for (let index = 0; index < result.length; index++) {
+                let sch_ind = id_map[result[index].schedule_id]
+                schedule[sch_ind].references.push(result[index])
+            }
+            res.status(200).json({
                 code: 200,
                 msg: '[Success] Get schedule successfully',
                 data: schedule
             })
-        }
+        })
     })
     .catch(function(err) {
+        console.log(err)
         return res.status(500).json({
             errcode: 500,
-            errmsg: '[Error] Internal err',
+            errmsg: '[Error] Internal error.',
             errdata: err
         })
     })
-}
 
-// 训练打卡
-var checkinSchedule = function(req, res, next) {
-    
 }
 
 module.exports = {
     createTeamSchedule: createTeamSchedule,
-    getScheduleList: getScheduleList,
-    getScheduleDetail: getScheduleDetail
+    getSchedules: getSchedules
 }

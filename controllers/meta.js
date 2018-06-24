@@ -5,7 +5,8 @@ var createMeta = function(req, res, next) {
     // 校验post format
     if (!req.body.team_id || !req.body.training_name
         || !req.body.index1 || !req.body.index2
-        || !req.body.index3 || !req.body.index4) {
+        || !req.body.index3 || !req.body.index4
+        || !req.body.index5 || !req.body.index6) {
         return res.status(400).json({
             errcode: 400,
             errmsg: '[Error] Wrong query format'
@@ -27,6 +28,7 @@ var createMeta = function(req, res, next) {
             return Meta.create(req.body.training_name,
                 req.body.index1, req.body.index2,
                 req.body.index3, req.body.index4,
+                req.body.index5, req.body.index6,
                 req.body.team_id)
             .then(function(result) {
                 return res.status(201).json({

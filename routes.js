@@ -33,6 +33,8 @@ var authController = require('./controllers/auth')
 var teamController = require('./controllers/team')
 var metaController = require('./controllers/meta')
 var scheduleController = require('./controllers/schedule')
+var punchController = require('./controllers/punch')
+var recordController = require('./controllers/record')
 
 // API
 
@@ -53,8 +55,15 @@ router.delete('/team/member', teamController.removeMember);
 router.post('/schedule/meta', metaController.createMeta)
 router.get('/schedule/meta', metaController.getMeta)
 router.post('/schedule', scheduleController.createTeamSchedule)
-router.get('/schedule', scheduleController.getScheduleDetail)
-router.get('/schedule/collection', scheduleController.getScheduleList)
+router.get('/schedule', scheduleController.getSchedules)
+
+// '/punch'
+router.router('/punch').post(upload.single('avatar'), punchController.punchInSchedule)
+router.get('/punch', punchController.getPunchInformation)
+
+// '/record'
+router.post('/record', recordController.uploadTestingRecord)
+router.get('/record', recordController.getRecords)
 
 
 module.exports = router
