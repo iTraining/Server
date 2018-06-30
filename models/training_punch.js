@@ -23,7 +23,7 @@ module.exports = {
     create: (wx_id, schedule_id, completion, image_url) => {
         return db.queryDb(insert_sql, [wx_id, schedule_id, completion, image_url])
         .then(function(result) {
-            return db.queryDb('SELECT * FROM training_punch WHERE meta_id=?', [result.insertId])
+            return db.queryDb('SELECT * FROM training_punch WHERE punch_id=?', [result.insertId])
         })
     } 
 }

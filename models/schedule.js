@@ -10,13 +10,13 @@ var select_id_sql = 'SELECT * FROM schedule WHERE schedule_id=?'
 var insert_team_sql = 'INSERT INTO schedule (title, description, training_date, training_class, state, team_id, wx_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
 module.exports = {
     // 获取schedule从数据库
-    get_created: (wx_id, team_id, b_date, e_date) => {
+    get_created: (team_id, wx_id, b_date, e_date) => {
         if (team_id === -1) team_id = '%'
         return db.queryDb(select_created_sql, [wx_id, team_id, b_date, e_date])
     },
     get_schedule: (team_id, wx_id, b_date, e_date) => {
         if (team_id === -1) team_id = '%'
-        return db.queryDb(select_schedule_sql, [wx_id])
+        return db.queryDb(select_schedule_sql, [team_id, wx_id, b_date, e_date])
     },
     // 创建schedule到数据库
     create_for_team: (title, description, training_date, training_class, state, team_id, wx_id) => {
