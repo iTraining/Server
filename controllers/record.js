@@ -31,6 +31,8 @@ var uploadTestingRecord = function(req, res, next) {
 // 获取成绩
 var getRecords = function(req, res, next) {
     // 校验表单
+    req.query.team_id = Number(req.query.team_id)
+    req.query.schedule_id = Number(req.query.schedule_id)
     if (!(req.query.option === 'team' || req.query.option === 'private')
         || !req.query.team_id || !req.query.schedule_id || !req.query.b_date || !req.query.e_date) {
         return res.status(400).json({
