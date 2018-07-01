@@ -129,7 +129,7 @@ var getSchedules = function(req, res, next) {
         // 获取自己队伍的计划
         get_sch = Schedule.get_schedule
     }
-
+    req.query.team_id = Number(req.query.team_id)
     get_sch(req.query.team_id, req.session.openid, req.query.b_date, req.query.e_date)
     .then(function(result) {
         var schedule = result
