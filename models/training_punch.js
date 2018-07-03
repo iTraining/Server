@@ -2,10 +2,10 @@ var db = require('./db')
 
 var select_private_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE training_punch.wx_id=? '+
                             'AND schedule.team_id LIKE ? AND training_punch.schedule_id LIKE ? '+
-                            'AND training_punch.punch.date >= ? AND training_punch.punch.date < ?'
+                            'AND training_punch.punch_date >= ? AND training_punch.punch_date < ?'
 var select_team_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE schedule.wx_id=? '+
                             'AND schedule.team_id LIKE ? AND training_punch.schedule_id LIKE ? '+
-                            'AND training_punch.punch.date >= ? AND training_punch.punch.date < ?'
+                            'AND training_punch.punch_date >= ? AND training_punch.punch_date < ?'
 var insert_sql = 'INSERT INTO training_punch (wx_id, schedule_id, completion, image_url) VALUES (?, ?, ?, ?)'
 module.exports = {
     // 获取user从数据库
