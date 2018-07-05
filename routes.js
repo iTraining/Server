@@ -35,6 +35,7 @@ var metaController = require('./controllers/meta')
 var scheduleController = require('./controllers/schedule')
 var punchController = require('./controllers/punch')
 var recordController = require('./controllers/record')
+var momentController = require('./controllers/moment')
 
 // API
 
@@ -64,6 +65,9 @@ router.get('/punch', punchController.getPunchInformation)
 // '/record'
 router.post('/record', recordController.uploadTestingRecord)
 router.get('/record', recordController.getRecords)
+
+// '/moment'
+router.get('/moment', momentController.getMomentInformation)
 
 
 module.exports = router

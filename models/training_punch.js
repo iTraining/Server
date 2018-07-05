@@ -6,6 +6,10 @@ var select_private_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE
 var select_team_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE schedule.wx_id=? '+
                             'AND schedule.team_id LIKE ? AND training_punch.schedule_id LIKE ? '+
                             'AND training_punch.punch.date >= ? AND training_punch.punch.date < ?'
+var select_momment_sql =  'SELECT traing_punch.*, user.nickname, user.image_url '+
+                        'FROM training_punch, user INNER JOIN schedule WHERE schedule.wx_id=? '+
+                        'AND schedule.team_id LIKE ? AND training_punch.schedule_id LIKE ? '+
+                        'AND training_punch.punch.date >= ? AND training_punch.punch.date < ?'
 var insert_sql = 'INSERT INTO training_punch (wx_id, schedule_id, completion, image_url) VALUES (?, ?, ?, ?)'
 module.exports = {
     // 获取user从数据库
