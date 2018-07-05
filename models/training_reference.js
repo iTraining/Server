@@ -10,7 +10,7 @@ module.exports = {
         var select_sql = select_sql_ + '('
         for (var index = 0; index < schedule_id_list.length; index++) {
             select_sql += String(schedule_id_list[index])
-            if (index != schedule_id_list.length) select_sql += ', '
+            if (index != schedule_id_list.length-1) select_sql += ', '
         }
         select_sql += ')'
         return db.queryDb(select_sql, [])

@@ -129,8 +129,8 @@ var getSchedules = function(req, res, next) {
         // 获取自己队伍的计划
         get_sch = Schedule.get_schedule
     }
-
-    get_sch(req.session.openid, req.query.team_id, req.query.b_date, req.query.e_date)
+    req.query.team_id = Number(req.query.team_id)
+    get_sch(req.query.team_id, req.session.openid, req.query.b_date, req.query.e_date)
     .then(function(result) {
         var schedule = result
         var schedule_id_list = [] 
@@ -138,21 +138,30 @@ var getSchedules = function(req, res, next) {
         for (let index = 0; index < schedule.length; index++) {
             schedule[index].references = []
             schedule_id_list.push(schedule[index].schedule_id)
-            id_map[schedule_id] = index
+            id_map[schedule[index].schedule_id] = index
         }
         // 获取相应的references
-        return Reference.get_by_schedule(schedule)
-        .then(function(result) {
-            for (let index = 0; index < result.length; index++) {
-                let sch_ind = id_map[result[index].schedule_id]
-                schedule[sch_ind].references.push(result[index])
-            }
-            res.status(200).json({
-                code: 200,
-                msg: '[Success] Get schedule successfully',
-                data: schedule
+        if (schedule.length) {
+	    return Reference.get_by_schedule(schedule_id_list)
+            .then(function(result) {
+                for (let index = 0; index < result.length; index++) {
+                    let sch_ind = id_map[result[index].schedule_id]
+                    schedule[sch_ind].references.push(result[index])
+                }
+                res.status(200).json({
+                    code: 200,
+                    msg: '[Success] Get schedule successfully',
+                    data: schedule
+                })
             })
-        })
+	}
+	else {
+	    res.status(200).json({
+		code: 200,
+		msg: '[Success] Get schedule successfully',
+		data: schedule
+	    })
+	}
     })
     .catch(function(err) {
         console.log(err)
