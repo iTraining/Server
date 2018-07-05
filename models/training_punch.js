@@ -24,7 +24,7 @@ module.exports = {
         return db.queryDb(select_team_sql, [wx_id, team_id, schedule_id, b_date, e_date])
     },
     get_moment: (wx_id, b_date, e_date) => {
-        return db.queryDb(select_team_sql, [wx_id, b_date, e_date])
+        return db.queryDb(select_moment_sql, [wx_id, b_date, e_date])
     },
     // 创建user到数据库
     create: (wx_id, schedule_id, completion, description, image_url) => {
