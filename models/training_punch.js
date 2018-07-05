@@ -6,7 +6,7 @@ var select_private_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE
 var select_team_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE schedule.wx_id=? '+
                             'AND schedule.team_id LIKE ? AND training_punch.schedule_id LIKE ? '+
                             'AND training_punch.punch_date >= ? AND training_punch.punch_date < ?'
-var insert_sql = 'INSERT INTO training_punch (wx_id, schedule_id, completion, image_url) VALUES (?, ?, ?, ?)'
+var insert_sql = 'INSERT INTO training_punch (wx_id, schedule_id, completion, description, image_url) VALUES (?, ?, ?, ?, ?)'
 module.exports = {
     // 获取user从数据库
     get_private: (wx_id, team_id, schedule_id, b_date, e_date) => {
@@ -20,8 +20,8 @@ module.exports = {
         return db.queryDb(select_team_sql, [wx_id, team_id, schedule_id, b_date, e_date])
     },
     // 创建user到数据库
-    create: (wx_id, schedule_id, completion, image_url) => {
-        return db.queryDb(insert_sql, [wx_id, schedule_id, completion, image_url])
+    create: (wx_id, schedule_id, completion, description, image_url) => {
+        return db.queryDb(insert_sql, [wx_id, schedule_id, completion, description, image_url])
         .then(function(result) {
             return db.queryDb('SELECT * FROM training_punch WHERE punch_id=?', [result.insertId])
         })

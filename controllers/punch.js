@@ -3,7 +3,7 @@ var Punch = require('../models/training_punch')
 // 打卡
 var punchInSchedule = function(req, res, next) {
     // 校验表单
-    if (!req.body.schedule_id || !req.body.completion) {
+    if (!req.body.description || !req.body.schedule_id || !req.body.completion) {
         return res.status(400).json({
             errcode: 400, 
             errmsg: '[Error] Wrong format'
@@ -14,7 +14,7 @@ var punchInSchedule = function(req, res, next) {
         image_url = 'img/'+req.file.filename
     }
     // 打卡
-    Punch.create(req.session.openid, req.body.schedule_id, req.body.completion, image_url)
+    Punch.create(req.session.openid, req.body.schedule_id, req.body.completion, req.body.description, image_url)
     .then(function(result) {
         return res.status(201).json({
             code: 201,
