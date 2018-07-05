@@ -7,7 +7,7 @@ var select_team_sql = 'SELECT * FROM training_punch INNER JOIN schedule WHERE sc
                             'AND schedule.team_id LIKE ? AND training_punch.schedule_id LIKE ? '+
                             'AND training_punch.punch_date >= ? AND training_punch.punch_date < ?'
 var insert_sql = 'INSERT INTO training_punch (wx_id, schedule_id, completion, description, image_url) VALUES (?, ?, ?, ?, ?)'
-var select_moment_sql = 'SELECT training_punch.*, user.nickname, user.image_url, schedule.schedule_id, schedule.title, '+
+var select_moment_sql = 'SELECT training_punch.*, user.nickname, user.image_url as avatar, schedule.schedule_id, schedule.title  '+
                             'FROM training_punch, user, schedule '+
                             'WHERE training_punch.wx_id=user.wx_id AND schedule.wx_id=? '+
                             'AND training_punch.punch_date >= ? AND training_punch.punch_date < ?'
