@@ -24,7 +24,7 @@ var getMomentInformation = function(req, res, next) {
         }
         // 获取相应的references
         if (moment_list.length) {
-            return Reference.get_by_schedule(schedule_id_list)
+            return Reference.get_with_meta_by_schedule(schedule_id_list)
                 .then(function(result) {
                     for (let index = 0; index < result.length; index++) {
                         let sch_ind = id_map[result[index].schedule_id]
