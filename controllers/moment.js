@@ -20,7 +20,8 @@ var getMomentInformation = function(req, res, next) {
         for (let index = 0; index < moment_list.length; index++) {
             moment_list[index].references = []
             schedule_id_list.push(moment_list[index].schedule_id)
-            id_map[schedule_id_list[index]] = index
+            if (id_map[schedule_id_list[index]] == undefined) id_map[schedule_id_list[index]] = []
+            id_map[schedule_id_list[index]].push(index)
         }
         // 获取相应的references
         if (moment_list.length) {
@@ -28,7 +29,8 @@ var getMomentInformation = function(req, res, next) {
                 .then(function(result) {
                     for (let index = 0; index < result.length; index++) {
                         let sch_ind = id_map[result[index].schedule_id]
-                        moment_list[sch_ind].references.push(result[index])
+                        for (let i = 0; i < sch_ind.length; i++)
+                            moment_list[sch_ind[i]].references.push(result[index])
                     }
                     res.status(200).json({
                         code: 200,
