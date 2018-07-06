@@ -46,14 +46,14 @@ var getPunchInformation = function(req, res, next) {
     }
     var get_punch
     if (req.query.option === 'team') {
-        get_punch = Punch.get_private
+        get_punch = Punch.get_team
     }
     else {
-        get_punch = Punch.get_team
+        get_punch = Punch.get_private
     }
     get_punch(req.session.openid, req.query.team_id, req.query.schedule_id, req.query.b_date, req.query.e_date)
     .then(function(result) {
-        return res.status(200).json({
+	return res.status(200).json({
             code: 200,
             msg: '[Success] Get punch in successfully',
             data: result
