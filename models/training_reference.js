@@ -3,7 +3,7 @@ var db = require('./db')
 var select_sql_ = 'SELECT * FROM training_reference WHERE schedule_id IN '
 
 var select_with_meta_sql_ = 'SELECT * FROM training_reference, training_meta '+
-                    'WHERE training_reference.meta_id=training_meta.meta_id AND reference.schedule_id IN '
+                    'WHERE training_reference.meta_id=training_meta.meta_id AND training_reference.schedule_id IN '
 
 var insert_sql_ = 'INSERT INTO training_reference (group_number,'+
                     ' data1, data2, data3, data4, data5, data6, test_index, meta_id, schedule_id) VALUES '
