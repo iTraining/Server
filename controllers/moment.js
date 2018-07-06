@@ -1,4 +1,5 @@
 var Punch = require('../models/training_punch')
+var Reference = require('../models/training_reference')
 
 // 获取动态信息
 var getMomentInformation = function(req, res, next) {
@@ -9,7 +10,7 @@ var getMomentInformation = function(req, res, next) {
             errmsg: '[Error] Wrong query format'
         })
     }
-    get_moment(req.session.openid, req.query.b_date, req.query.e_date)
+    Punch.get_moment(req.session.openid, req.query.b_date, req.query.e_date)
     .then(function(result) {
         var moment_list = result
 
