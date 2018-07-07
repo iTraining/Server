@@ -1,5 +1,4 @@
 # Web-Server
-<<<<<<< HEAD
 
 ## Run redis server
 Change [requirepass] in /path/to/redis.conf to password.
